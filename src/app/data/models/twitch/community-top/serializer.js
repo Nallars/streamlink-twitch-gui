@@ -1,11 +1,9 @@
 import TwitchSerializer from "data/models/twitch/serializer";
 
 
-export default TwitchSerializer.extend({
+export default class TwitchCommunityTopSerializer extends TwitchSerializer {
 	// the API documentation is wrong
-	//primaryKey: "id",
+	//primaryKey = "id";
 
-	modelNameFromPayloadKey() {
-		return "twitchCommunityTop";
-	}
-});
+	modelNameFromPayloadKey = () => "twitch-community-top";
+}

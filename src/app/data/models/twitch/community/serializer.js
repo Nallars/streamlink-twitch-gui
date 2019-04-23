@@ -1,18 +1,16 @@
 import TwitchSerializer from "data/models/twitch/serializer";
 
 
-export default TwitchSerializer.extend({
-	modelNameFromPayloadKey() {
-		return "twitchCommunity";
-	},
+export default class TwitchCommunitySerializer extends TwitchSerializer {
+	modelNameFromPayloadKey = () => "twitch-community";
 
 	normalizeResponse( store, primaryModelClass, payload, id, requestType ) {
 		payload = {
-			twitchCommunity: payload
+			[ this.modelNameFromPayloadKey() ]: payload
 		};
 
-		return this._super( store, primaryModelClass, payload, id, requestType );
-	},
+		return super.normalizeResponse( store, primaryModelClass, payload, id, requestType );
+	}
 
 	normalize( modelClass, resourceHash, prop ) {
 		// rename properties
@@ -28,6 +26,6 @@ export default TwitchSerializer.extend({
 		// fix language format
 		resourceHash[ "language" ] = ( resourceHash[ "language" ] || "" ).toLowerCase();
 
-		return this._super( modelClass, resourceHash, prop );
+		return super.normalize( modelClass, resourceHash, prop );
 	}
-});
+}
