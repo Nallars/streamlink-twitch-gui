@@ -1,17 +1,16 @@
 import { getOwner } from "@ember/application";
-import { get } from "@ember/object";
 import Route from "@ember/routing/route";
 
 
-export default Route.extend({
+export default class CommunitiesCommunityInfoRoute extends Route {
 	async model() {
-		const model = this.modelFor( "communitiesCommunity" );
-		await get( model, "owner" );
+		const model = this.modelFor( "communities-community" );
+		await model.owner.promise;
 
 		return model;
-	},
+	}
 
 	refresh() {
-		return getOwner( this ).lookup( "route:communitiesCommunity" ).refresh();
+		return getOwner( this ).lookup( "route:communities-community" ).refresh();
 	}
-});
+}

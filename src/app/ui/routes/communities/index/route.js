@@ -3,8 +3,9 @@ import InfiniteScrollCursorMixin from "ui/routes/-mixins/routes/infinite-scroll/
 import RefreshRouteMixin from "ui/routes/-mixins/routes/refresh";
 
 
-export default Route.extend( InfiniteScrollCursorMixin, RefreshRouteMixin, {
-	itemSelector: ".community-item-component",
-	modelName: "twitchCommunityTop",
-	modelPreload: "avatar_image_url"
-});
+export default class CommunitiesIndexRoute
+extends Route.extend( InfiniteScrollCursorMixin, RefreshRouteMixin ) {
+	itemSelector = ".community-item-component";
+	modelName = "twitch-community-top";
+	modelPreload = "avatar_image_url";
+}
