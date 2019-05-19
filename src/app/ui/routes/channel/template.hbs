@@ -23,6 +23,7 @@
 {{#sub-menu "channel" (hash
 	index=(t "routes.channel.menu.details")
 	teams=(t "routes.channel.menu.teams")
+	videos=(t "routes.channel.menu.videos")
 	settings=(t "routes.channel.menu.settings")
 ) as |subroute name|}}
 	{{#link-to (concat "channel." subroute) model tagName="li"}}{{name}}{{/link-to}}

@@ -1,0 +1,9 @@
+{{#if withFlag}}
+{{#if videos.channel.hasBroadcasterLanguage}}
+<span>{{flag-icon type="broadcaster" lang=videos.channel.broadcaster_language}}</span>
+{{/if}}
+{{/if}}
+<span title="{{videos.titleCreatedAt}}"><i class="fa fa-clock-o"></i>{{hours-from-now videos.created_at interval=60000}}</span>
+<span title="{{videos.titleViewers}}"><i class="fa fa-users"></i>{{format-viewers videos.viewers}}</span>
+<span title="{{videos.channel.titleFollowers}}"><i class="fa fa-heart"></i>{{format-viewers videos.channel.followers}}</span>
+<span title="{{videos.channel.titleViews}}"><i class="fa fa-line-chart"></i>{{format-viewers videos.channel.views}}</span>

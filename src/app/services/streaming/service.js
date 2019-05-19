@@ -8,6 +8,7 @@ import { clearCache } from "./cache";
 import resolvePlayer from "./player/resolve";
 import resolveProvider from "./provider/resolve";
 import launch from "./launch";
+import launchVideo from "./launchVideo";
 import { setShowInTaskbar, setMinimized, setVisibility } from "nwjs/Window";
 import {
 	ATTR_GUI_MINIMIZE_MINIMIZE,
@@ -19,6 +20,7 @@ const { "stream-reload-interval": streamReloadInterval } = varsConfig;
 
 
 const modelName = "stream";
+const modelNameVideo = "video";
 
 
 function setIfNotNull( objA, keyA, objB, keyB ) {
@@ -110,6 +112,47 @@ export default Service.extend({
 		await this.launchStream( stream, true );
 	},
 
+	async startVideo( twitchVideo, quality ) {
+		get( this, "modal" ).openModal( "streaming", this, {
+			error: null,
+			active: null
+		});
+		const store = get( this, "store" );
+		const channel = get( twitchVideo, "channel" );
+		const id = get( twitchVideo, "_id" );
+		let video;
+		// is the video already running?
+		if ( store.hasRecordForId( modelNameVideo, id ) ) {
+			video = store.recordForId( modelNameVideo, id );
+
+			if ( quality !== undefined && get( video, "quality" ) !== quality ) {
+				set( video, "quality", quality );
+			}
+
+			set( this, "active", video );
+			this.onModalOpened( video );
+
+			return;
+		}
+
+		// create a new Stream record
+		video = store.createRecord( modelNameVideo, {
+			id,
+			channel,
+			video: twitchVideo,
+			quality: get( this, "settings.streaming.quality" ),
+			chat_open: get( this, "settings.streams.chat_open" ),
+			started: new Date()
+		});
+
+		this.onModalOpened( video );
+
+		// override record with channel specific settings
+		await this.getChannelSettings( video, quality );
+
+		await this.launchVideo( video, true );
+	},
+
 	async launchStream( stream, launchChat ) {
 		// begin the stream launch procedure
 		try {
@@ -138,6 +181,48 @@ export default Service.extend({
 
 			// launch the stream
 			await launch(
+				stream,
+				providerObj,
+				playerObj,
+				() => this.onStreamSuccess( stream, launchChat )
+			);
+
+		} catch ( error ) {
+			await this.onStreamFailure( stream, error );
+
+		} finally {
+			await this.onStreamEnd( stream );
+		}
+	},
+
+	async launchVideo( stream, launchChat ) {
+		// begin the stream launch procedure
+		try {
+			set( this, "active", stream );
+
+			await logDebug(
+				"Preparing to launch stream",
+				() => stream.toJSON({ includeId: true })
+			);
+
+			const settingsStreaming = get( this, "settings.streaming" ).toJSON();
+
+			// resolve streaming provider
+			const providerObj = await resolveProvider(
+				stream,
+				settingsStreaming.provider,
+				settingsStreaming.providers
+			);
+
+			// resolve player
+			const playerObj = await resolvePlayer(
+				stream,
+				settingsStreaming.player,
+				settingsStreaming.players
+			);
+
+			// launch the stream
+			await launchVideo(
 				stream,
 				providerObj,
 				playerObj,

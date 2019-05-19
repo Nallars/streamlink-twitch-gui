@@ -55,6 +55,7 @@ channel:
     menu:
         details: Details
         teams: Teams
+        videos: VOD
         settings: Einstellungen
     offline: ist gerade offline
     details:

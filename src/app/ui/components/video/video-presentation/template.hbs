@@ -1,0 +1,20 @@
+<div class="image">
+{{video-preview-image
+	video=video
+	channel=video.channel
+	clickable=clickablePreview
+	src=video.preview.large
+	noContextmenu=(bool-not clickablePreview)
+}}
+</div>
+<div class="info">
+<h3 class="title">{{#if video.channel.hasLanguage}}{{flag-icon type="channel" lang=video.channel.language}}{{/if}}{{#link-to "channel" video.channel.id}}{{video.channel.detailedName}}{{/link-to}}</h3>
+{{#if video.game}}<div class="game"><i class="fa fa-gamepad"></i>{{#link-to "games.game" video.game}}{{video.game}}{{/link-to}}</div>{{/if}}
+{{stats-row video=video}}
+{{embedded-links class="status" text=video.channel.status}}
+{{#if hasBlock}}
+<footer class="buttons">
+{{yield}}
+</footer>
+{{/if}}
+</div>

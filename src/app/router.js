@@ -16,6 +16,7 @@ export default EmberRouter.extend().map(function() {
 	this.route( "streams" );
 	this.route( "channel", { path: "/channel/:channel" }, function() {
 		this.route( "teams" );
+		this.route( "videos" );
 		this.route( "settings" );
 	});
 	this.route( "user", function() {
